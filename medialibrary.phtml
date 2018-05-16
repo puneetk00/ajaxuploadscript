@@ -1,0 +1,1039 @@
+<?php 
+	//$url = $this->context->getUrl();
+	$myUrl = $this->getUrl('cms/wysiwyg_images/index/', array('target_element_id' => 'cms_page_form_content'));
+	$url = $this->getUrl("resourcespage/document/requests", array('action' => 'scandir'));
+	$search_url = $this->getUrl("resourcespage/document/requests", array('action' => 'searchfile'));
+	
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	$groupOptions = $objectManager->get('\Magento\Customer\Model\ResourceModel\Group\Collection')->toOptionArray();
+	
+		?>
+
+<div class="medialibrarry">
+		<div class="left_bar">
+				<div class="side-col">
+					<div class="">
+						<div class="">
+							<div class="">
+								<a href="javascript:void(0)" class="unext" >Collapse All</a>
+								<span class="separator">|</span>
+								<a href="javascript:void(0)" class="ext">Expand All</a>
+							</div>
+						</div>
+						<div data-role="tree" class="left-menu-library">
+							<?= json_decode(file_get_contents($url))->menu ?>
+						</div>
+						</div>
+				</div>
+			</div>
+		<div class="maincontent">
+		<div class="search">
+			<form action="" method="POST" id="create_folder">
+				<label>Search</label>
+				<div class="search_input">
+				<input type="text" name="searcg" class="search_medialib admin__control-text">
+				<button class="search_submit">Search</button>
+		<div class="dropdown">
+				<button onclick="myFunction(); return false;" class="dropbtn search_filter">Filter</button>
+				<div id="myDropdown" class="dropdown-content">
+				<ul>
+					<li class="filter_types">
+						<input id="png" type="checkbox" value="png" name="filter[]" >
+						<label for="png" >png</label>
+					</li>
+					<li class="filter_types">
+						<input id="jpg" type="checkbox" value="jpg" name="filter[]" >
+						<label for="jpg" >jpg</label>
+					</li>
+					<li class="filter_types">
+						<input id="jpeg" type="checkbox" value="jpeg" name="filter[]" >
+						<label for="jpeg" >jpeg</label>
+					</li>
+					<li class="filter_types">
+						<input id="gif" type="checkbox" value="gif" name="filter[]" >
+						<label for="gif" >gif</label>
+					</li>
+					<li class="filter_types">
+						<input id="eps" type="checkbox" value="eps" name="filter[]" >
+						<label for="eps" >eps</label>
+					</li>
+					<li class="filter_types breack">
+						<input id="mov" type="checkbox" value="mov" name="filter[]" >
+						<label for="mov" >mov</label>
+					</li>
+					<li class="filter_types">
+						<input id="avi" type="checkbox" value="avi" name="filter[]" >
+						<label for="avi" >avi</label>
+					</li>
+					<li class="filter_types breack">
+						<input id="mp4" type="checkbox" value="mp4" name="filter[]" >
+						<label for="mp4" >mp4</label>
+					</li>
+					<li class="filter_types">
+						<input id="pdf" type="checkbox" value="pdf" name="filter[]" >
+						<label for="pdf" >pdf</label>
+					</li>
+					<li class="filter_types">
+						<input id="Doc" type="checkbox" value="Doc" name="filter[]" >
+						<label for="Doc" >doc</label>
+					</li>
+					<li class="filter_types">
+						<input id="docx" type="checkbox" value="docx" name="filter[]" >
+						<label for="docx" >docx</label>
+					</li>
+					<li class="filter_types">
+						<input id="xls" type="checkbox" value="xls" name="filter[]" >
+						<label for="xls" >xls</label>
+					</li>
+					<li class="filter_types">
+						<input id="xlsx" type="checkbox" value="xlsx" name="filter[]" >
+						<label for="xlsx" >xlsx</label>
+					</li>
+				</ul>
+			
+			<div class="apply-clear">
+				<a href="javascript:void(0)" class="clear-filter-mlibrary">Clear</a>
+				<a href="javascript:void(0)" class="apply-all-filter-mlibrary">Apply</a>
+			</div>
+		  </div>
+		</div>
+		<script>
+			/* When the user clicks on the button, 
+			toggle between hiding and showing the dropdown content */
+			function myFunction() {
+				document.getElementById("myDropdown").classList.toggle("show");
+				//return false;
+			}
+
+			// Close the dropdown if the user clicks outside of it
+			window.onclick = function(event) {
+			  if (!event.target.matches('.dropbtn') && !event.target.matches('input') && !event.target.matches('label')  ) {
+
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				var i;
+				for (i = 0; i < dropdowns.length; i++) {
+				  var openDropdown = dropdowns[i];
+				  if (openDropdown.classList.contains('show')) {
+					openDropdown.classList.remove('show');
+				  }
+				}
+			  }
+			}
+			</script>
+				</div>
+				
+			</form>
+			
+		</div>
+		<div class="topmenu">
+			<button class="mediacrfld">Create Folder</button> 
+			<button class="delete_folder" id="delete_folder" >Delete Folder</button>  
+			<button class="rename_folder" >Rename</button>  
+			<button class="permission" >Folder Permission</button>  
+			<button class="uploadfile" >Upload</button>
+			<button class="thumb_uploadfile" >Thumbnail Upload</button>
+			<button class="deletefile" style="display:none" >Delete</button>
+		</div>
+		<div class="main_content">
+				
+		</div>
+		</div>
+</div>
+
+<div style="display:none">
+
+<!---------------------------------Folder create form ------------------------------------>
+<div id="createfolder">
+	<form action="" method="POST" id="create_folder">
+		<input type="text" id="folder_name" name="folder_name">
+		<input type="hidden" id="dir" name="dir" >
+	</form>
+</div>
+<!---------------------------------Folder create form ------------------------------------>
+
+<!---------------------------------Folder rename form ------------------------------------>
+<div id="renamefolder">
+	<form action="" method="POST" id="rename_folder">
+		<input type="text" id="new_dir" name="new_dir" multiple>
+		<input type="hidden" id="old_dir" name="old_dir" multiple>
+	</form>
+</div>
+<!---------------------------------Folder create form ------------------------------------>
+
+<!--------------------------------- Upload Files ------------------------------------>
+<div id="uploadfile">
+		<form action="" method="POST" id="rename_folder">
+		<input type="file" id="documents_upload" name="documents" multiple>
+		</form>
+		<span class="status-process"></span>
+</div>
+<!---------------------------------Upload Files------------------------------------>
+
+<!--------------------------------- Thumbnail Upload Files ------------------------------------>
+<div id="thumb_uploadfile">
+		<form action="" method="POST" id="thumb_uploadfile_form">
+		<input type="file" id="thumb_uploadfile_file" name="documents" multiple>
+		</form>
+		<span class="thumb_uploadfile_status_process"></span>
+</div>
+<!---------------------------------Upload Files------------------------------------>
+
+<!--------------------------------- permission ------------------------------------------>
+<div id="permission">
+		<form action="" method="POST" id="permission_setting">
+			<select id="customer_groups" name="customer_grou" multiple>
+				<?php foreach($groupOptions as $value){ ?>
+					<option value="<?= $value['value'] ?>"><?= $value['label']; ?></option>
+					<?php } ?>
+			</select>
+		</form>
+</div>
+<!--------------------------------- permission ------------------------------------------>
+</div>
+<style>
+	.medialibrarry { width:100% }
+	.left_bar { width:30%; float:left; }
+	.maincontent { width: 70%; float: right; }
+	.topmenu {border-bottom: 1px solid #adadad;margin: 10px;padding-bottom: 10px;}
+	.page-actions {display:none;}
+	.filecnt.selected, .filecnt:hover { border: 1px solid #eb5202 !important; }
+	.main_content { height: 600px; overflow-y: scroll; }
+	
+	/***************************** filter dropdown ************************/
+
+
+.dropdown {position: relative;display: inline-block;}
+.dropdown-content {display: none;position: absolute;background-color: #f1f1f1;min-width: 160px;overflow: auto;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);z-index: 1;}
+.dropdown-content a {color: black;padding: 12px 16px;text-decoration: none;display: block;}
+.dropdown a:hover {background-color: #ddd}
+.show {display:block;}
+.dropdown a.clear-filter-mlibrary {width: 50%;float: left;}
+.dropdown a.apply-all-filter-mlibrary {width: 50%;float: left;}
+.filter_types {padding:0 10px}
+a.jstree-clicked { text-decoration: underline; }
+/***************************** filter dropdown ************************/
+	
+</style>
+
+<script>
+		<?php $folder_id = "test"; ?>
+		require(['jquery','Magento_Ui/js/modal/modal','Magento_Ui/js/modal/alert', 'Magento_Ui/js/modal/confirm'],function($,modal,alert,confirmation){		
+		var place_holder = "pub/media/place_holder.svg";	
+		var pdf = "pub/media/pdf.png";	
+		var arr = ['jpg', 'jpeg', 'gif', 'png'];
+		
+		
+		/*************************** thumbnail upload ************************************/
+			
+			var options = {
+			type: 'popup',
+			responsive: true,
+			innerScroll: true,
+			title: 'Thumbnail Uploade only ".png" format',
+			buttons: [{
+				text: $.mage.__('Cancel Upload'),
+				class: 'checkout-order',
+				click: function () {
+					this.closeModal();
+				}
+			}]
+
+		};
+		
+		var popup = modal(options, $('#thumb_uploadfile'));
+		$(".thumb_uploadfile").on("click",function(event){
+			$(".thumb_uploadfile_status_process").text('');
+			$('#thumb_uploadfile').modal('openModal');
+			event.preventDefault();
+		});
+		/*************************** thumbnail upload ************************************/
+		
+		/**************************** item print *****************************************/
+			$.fn.itemhtml = function(data) {
+				
+				
+				 var htmlimg = '';
+				 if($.type(data) == 'string'){
+					data = JSON.parse(data);
+				}
+				console.log(data);
+				 
+				 $.each(data.files ,function(i, field){
+						console.log(field);
+						//var extension = field.substr( (field.lastIndexOf('.') +1) );
+						var filename = field.mfile.substr( (field.mfile.lastIndexOf('/') +1) ).split(".")[0];
+						// if(jQuery.inArray( extension, arr ) == -1){
+							// img_src = "pub/media/"+extension+".png";
+						// }else{
+							
+							// img_src = field;
+							
+						// }
+						htmlimg += "<div class=\"filecnt\" title='"+filename+"'>";
+						htmlimg +=	"<p class=\"nm\">";
+						htmlimg +=	"<img src=\"<?= $this->getBaseUrl() ?>"+field.thumbnail+"\" data-filepath=\""+field.mfile+"\">";
+						htmlimg +=	"</p>";
+						htmlimg +=	"<small>"+filename+"</small>";
+						htmlimg += "</div>";
+					});
+					
+					$(this).html(htmlimg);
+				  return this;
+			   }; 
+		/**************************** item print *****************************************/
+		
+		
+		
+		
+		/*************************Filter search_filter *****************************/	
+		
+			$(".apply-all-filter-mlibrary").on("click",function(event){
+				
+				var filter = localStorage.getItem("filter");
+					if($.type(filter) == 'string'){
+							data = JSON.parse(filter);
+					}
+				
+				var fields = jQuery("#myDropdown :input" ).serializeArray();
+				var filter = [];
+				jQuery.each(fields , function(ind, filsterfield){
+					filter[ind] = filsterfield.value;
+				});
+				
+				$("#myDropdown").removeClass("show");
+				var dir = $("a.medialib.jstree-clicked").attr("data-dir");
+				
+				console.log(filter); 
+				console.log(data.files); 
+				var searted = {};
+				var items = {};
+				$.each(data.files, function(indexpk, field)
+				{
+					var filename = field.substr( (field.lastIndexOf('.') + 1) ).toLowerCase();
+					if ($.inArray(filename, filter) > -1){}else{
+						return; 
+					}
+					items[indexpk] = field;
+				});				
+				
+				searted.files = items;
+				
+				$(".main_content").itemhtml(searted); 
+			return false;
+			event.preventDefault();
+		});
+		
+		$(".clear-filter-mlibrary").on("click",function(event){
+			
+				var fields = jQuery("#filter :input" ).prop('checked', false);
+			
+				var filter = localStorage.getItem("filter");
+					if($.type(filter) == 'string'){
+							data = JSON.parse(filter);
+					}
+		
+							
+				var fields = jQuery("#filter :input" ).serializeArray();
+				var filter = [];
+				jQuery.each(fields , function(ind, filsterfield){
+					filter[ind] = filsterfield.value;
+				});
+				
+				$("#myDropdown").removeClass("show");
+				var dir = $("a.medialib.jstree-clicked").attr("data-dir");
+				
+			
+				var searted = {};
+				var items = {};
+				$.each(data.files, function(indexpk, field)
+				{
+					var filename = field.substr( (field.lastIndexOf('.') + 1) ).toLowerCase();
+					// if ($.inArray(filename, filter) > -1){}else{
+						// return; 
+					// }
+					items[indexpk] = field;
+				});				
+				
+				searted.files = items;
+				
+				$(".main_content").itemhtml(searted);
+				
+			event.preventDefault();
+		});	
+		
+		/*************************Filter*****************************/	
+		
+		
+		
+		
+		
+		/************************** Searching *****************************/
+		var searchfiles = <?= file_get_contents($search_url) ?>;
+		
+		$(document).on('click', '.search_submit', function(event){
+		var htmlimg = "";
+		//var searchfiles = "";
+		/****************************** ajax *********************************/
+		/* formdata = new FormData();
+		formdata.append("action", 'searchfile');
+		var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";
+
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						dataType: 'html',
+						data: formdata,
+						processData: false,
+						contentType: false,
+						showLoader: true //use for display loader 
+						}).done(function (data){
+							searchfiles = data['files'];
+							console.log(searchfiles);
+						});
+						 */
+		/************************** ajax********************************/
+		
+			var searchingvalue = $(".search_medialib").val().toUpperCase();
+			if(searchingvalue == ''){
+					alert({
+						title: 'Search Files',
+						content: "Search filed empty please enter file name.",
+						actions: {
+							always: function(){}
+						}
+					});
+					return false;
+				}
+			$.each(searchfiles.files, function(indexpk, field){
+				var filename = field.substr( (field.lastIndexOf('/') +1) ).toUpperCase();
+				
+				
+				if (filename.indexOf(searchingvalue) > -1){
+				
+				}else{
+					return; 
+				}
+				var extension = field.substr( (field.lastIndexOf('.') +1) );
+				var filename = field.substr( (field.lastIndexOf('/') +1) ).split(".")[0];
+						if(jQuery.inArray( extension, arr ) == -1){
+							img_src = place_holder;
+						}else{
+							if(extension == 'pdf'){
+							img_src = pdf;
+							}else{
+							img_src = field;
+							}
+						}
+						htmlimg += "<div class=\"filecnt\" title='"+filename+"' >";
+						htmlimg +=	"<p class=\"nm\" style=\"height:75px;width:100px;\">";
+						htmlimg +=	"<img src=\"<?= $this->getBaseUrl() ?>"+img_src+"\" data-filepath=\""+field+"\">";
+						htmlimg +=	"</p><br/>";
+						htmlimg +=	"<small>"+filename+"</small>";
+						htmlimg += "</div>";
+				});
+				$(".main_content").html(htmlimg);
+					/* alert({
+						title: 'File upload limit',
+						content: searchingvalue.toUpperCase(),
+						actions: {
+							always: function(){}
+						}
+					}); */
+					
+				return false;
+			
+		});
+		
+		
+		/************************* collapciable menu ***********************/
+		function menureinitialize() {
+		$(function prepareList() {
+			$('#expList').find('li:has(ul)').unbind('click').click(function(event) {
+				if(this == event.target) {
+					$(this).toggleClass('expanded');
+					$(this).children('ul').toggle('medium');
+				}
+			}).addClass('collapsed').removeClass('expanded').children('ul').hide();
+			
+			$(".ext").unbind("click").click(function(){
+					$(".collapsed").addClass('expanded');
+					$(".collapsed").children('ul').show("slow");
+			});
+			$(".unext").unbind("click").click(function(){
+					$(".collapsed").removeClass('expanded');
+					$(".collapsed").children('ul').hide("slow");
+			});
+			
+			
+		});
+		}
+		menureinitialize();
+		/************************* collapciable menu ***********************/
+		/************************ Permission ********************************/
+		var options = {
+			type: 'popup',
+			responsive: true,
+			innerScroll: true,
+			title: 'Folder Access Permission',
+			buttons: [{
+				text: $.mage.__('Submit'),
+				class: 'continue-order',
+				click: function (events) {
+					
+					/**********Ajax***********/
+						var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";
+						
+						var groups = [];
+						 $.each($("#customer_groups option:selected"), function(){            
+							groups.push($(this).val());
+						});
+						
+				
+						formdata = new FormData();
+						var dir = $("#dir").val();
+						formdata.append("folder_path", dir);
+						formdata.append("action", 'folderpermission');
+						formdata.append("customer_group", groups.join(","));
+						
+
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						dataType: 'html',
+						data: formdata,
+						processData: false,
+						contentType: false,
+						showLoader: true //use for display loader 
+						}).done(function (data){
+							console.log(data);
+							//events.closeModal();
+							$('#permission').modal('closeModal');
+							return true;
+						});
+					/**********Ajax***********/
+					
+					
+					
+				}
+			},{
+				text: $.mage.__('Cancel'),
+				class: 'checkout-order',
+				click: function () {
+					this.closeModal();
+				}
+			}]
+
+		};
+		
+		
+		var popup = modal(options, $('#permission'));
+		$(".permission").on("click",function(event){
+			$('#permission').modal('openModal');
+			event.preventDefault();
+		});
+		
+		/************************ Permission ********************************/
+		
+		
+		
+		/*********************************file delete*******************************************/
+			$(document).on('dblclick','.filecnt img', function(){
+					window.open("<?= $this->getBaseUrl() ?>"+$(this).attr('data-filepath'));
+					$(".deletefile").attr('data-filepath', $(this).attr('data-filepath'));
+			});
+			
+			$(document).on('click', '.filecnt', function(){
+					$(this).toggleClass('selected');
+					
+					var deletefiles = $('.filecnt.selected img');
+					var links = [];
+					$.each(deletefiles, function(i,v){
+						links[i] = $(this).attr('data-filepath');
+					})
+					
+					if(links.length > 0){
+						$(".deletefile").show();
+					}else{
+						$(".deletefile").hide();
+					}
+					//attr('data-filepath')
+					$(".deletefile").attr('data-filepath', links.join(","));
+			});
+			
+			$(document).on('click', '.deletefile', function(){
+					//if (confirm("Are you sure you want delete this files!")){
+					
+						var htmlimg = '';
+						formdata = new FormData();
+						var dir = $("#dir").val();
+						var delele_file = $(this).attr('data-filepath');
+						formdata.append("dir", dir);
+						formdata.append("action", 'deletefile');
+						formdata.append("delete_file", delele_file);
+					
+						
+						
+						confirmation({
+						title: 'Delete Folder confirmation',
+						content: 'Are you sure you want delete this files!',
+						actions: {
+							confirm: function(){ 
+							
+							/**********Ajax***********/
+						
+						var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";;
+																		
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						data: formdata,
+						processData: false,
+						contentType: false,
+						showLoader: true //use for display loader 
+						}).done(function (data){
+							console.log(data.status);
+							 if(data.status == 1){
+							$.each(data.files,function(i, field){
+								
+								var extension = field.substr( (field.lastIndexOf('.') +1) );
+								var filename = field.substr( (field.lastIndexOf('/') +1) ).split(".")[0];
+								if(jQuery.inArray( extension, arr ) == -1){
+									img_src = place_holder;
+								}else{
+									if(extension == 'pdf'){
+									img_src = pdf;
+									}else{
+									img_src = field;
+									}
+								}
+								
+									htmlimg += "<div class=\"filecnt\" title='"+filename+"' >";
+									htmlimg +=	"<p class=\"nm\" style=\"height:75px;width:100px;\">";
+									htmlimg +=	"<img src=\"<?= $this->getBaseUrl() ?>"+img_src+"\" data-filepath=\""+field+"\">";
+									htmlimg +=	"</p><br/>";
+									htmlimg +=	"<small>"+filename+"</small>";
+									htmlimg += "</div>";
+								});
+							$(".main_content").html(htmlimg);
+							$(".deletefile").hide();
+							}
+							return true;
+						});
+						
+					/**********Ajax***********/
+							
+							},
+							cancel: function(){ return false; }
+						}
+						});
+						
+						
+						
+					
+					
+			});
+				
+		/*********************************file delete*******************************************/
+		
+		/******************************file upload ************************************/
+			$('#documents_upload, #thumb_uploadfile_file ').change(function(){    
+				//on change event  
+				var htmlimg = '';
+				if($(this).prop('files').length > 0)
+				{
+					console.log($(this).prop('files')); 
+					
+					formdata = new FormData();
+					
+					file = $(this).prop('files');
+					
+					if(file.length > 10 ){
+					alert({
+						title: 'File upload limit',
+						content: 'You can not upload more then 10 fils one time.',
+						actions: {
+							always: function(){}
+						}
+					});
+					return false;
+					}
+					
+					$.each(file, function(inx, filedata){
+						formdata.append("documents"+[inx], file[inx]);
+					});
+					
+					 var dir = $("#dir").val();
+					 formdata.append("dir", dir);
+					 formdata.append("action", "fileupload");
+					 if($(this).attr("id") == "thumb_uploadfile_file"){
+						formdata.append("uploadtype", "thumbnail");
+					 }else{
+						formdata.append("uploadtype", "mailfile");
+					 }
+					//console.log(formdata);
+					
+					/**********Ajax***********/
+						var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";;
+																		
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						data: formdata,
+						processData: false,
+						contentType: false,
+						showLoader: true, //use for display loader 
+						xhr: function(){
+							//upload Progress
+							var xhr = $.ajaxSettings.xhr();
+							if (xhr.upload) {
+								xhr.upload.addEventListener('progress', function(event) {
+									var percent = 0;
+									var position = event.loaded || event.position;
+									var total = event.total;
+									if (event.lengthComputable) {
+										percent = Math.ceil(position / total * 100);
+									}
+									//update progressbar
+									//$(progress_bar_id +" .progress-bar").css("width", + percent +"%");
+									$(".status-process").text(percent +"%");
+								}, true);
+							}
+							return xhr;
+						},
+						mimeType:"multipart/form-data"
+						}).done(function (data){
+							
+							if($.type(data) == 'string'){
+								data = JSON.parse(data);
+							}
+							
+							// console.log(data.status);
+							
+							 if(data.status == 1){
+							// $.each(data.files,function(i, field){
+								
+								// var extension = field.substr( (field.lastIndexOf('.') +1) );
+								// var filename = field.substr( (field.lastIndexOf('/') +1) ).split(".")[0];
+								// if(jQuery.inArray( extension, arr ) == -1){
+									// img_src = place_holder;
+								// }else{
+									// if(extension == 'pdf'){
+									// img_src = pdf;
+									// }else{
+									// img_src = field;
+									// }
+								// }
+								
+									// htmlimg += "<div class=\"filecnt\" title='"+filename+"' >";
+									// htmlimg +=	"<p class=\"nm\" style=\"height:75px;width:100px;\">";
+									// htmlimg +=	"<img src=\"<?= $this->getBaseUrl() ?>"+img_src+"\" data-filepath=\""+field+"\">";
+									// htmlimg +=	"</p><br/>";
+									// htmlimg +=	"<small>"+filename+"</small>";
+									// htmlimg += "</div>";
+								// });
+							$(".main_content").itemhtml(data);
+							$("#documents_upload").val('');
+							$(".status-process").append(" Uploaded");
+							}
+							return true;
+						});
+						
+					/**********Ajax***********/
+				}
+				
+				
+				
+			});
+		/******************************file upload ************************************/
+		
+		/************************ Create folder script ********************************/
+		var options = {
+			type: 'popup',
+			responsive: true,
+			innerScroll: true,
+			title: 'Create Folder',
+			buttons: [{
+				text: $.mage.__('Create'),
+				class: 'continue-order',
+				click: function (events) {
+					var folderclick = $("#folder_name").val().toUpperCase();
+					/**********Ajax***********/
+						var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";;
+						var request = {
+						'action':'createdir',	
+						'dir': $("#dir").val(),
+						'folder_name': $("#folder_name").val()
+						};
+
+						var data = $.param(request);
+
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						dataType: 'html',
+						data: data,
+						showLoader: true //use for display loader 
+						}).done(function (data){
+							console.log(data);
+							//events.closeModal();
+							$('#createfolder').modal('closeModal');
+							if(JSON.parse(data)['status'] == 1){
+								$(".left-menu-library").html(JSON.parse(data)['menu']);
+								 menureinitialize();
+								 var listofmenu = $("#expList li");
+								 $.each(listofmenu , function(n,v){ 
+									if($(this).text().toUpperCase().indexOf(folderclick) > -1){
+										$(this).click();
+									};
+								});
+								$("#folder_name").val('');
+							}
+							//customerData.set('messages', {'messages': 'messages'});
+							//customerData.reload('messages dsafdsa fdsa fdsa fds');
+							return true;
+						});
+					/**********Ajax***********/
+					
+					
+					
+				}
+			},{
+				text: $.mage.__('Cancel'),
+				class: 'checkout-order',
+				click: function () {
+					this.closeModal();
+				}
+			}]
+
+		};
+		
+		
+		var popup = modal(options, $('#createfolder'));
+		$(".mediacrfld").on("click",function(event){
+			$('#createfolder').modal('openModal');
+			event.preventDefault();
+		});
+		/************************ Create folder script ********************************/
+		
+		
+		
+		
+		/************************ Rename folder script ********************************/
+		var options = {
+			type: 'popup',
+			responsive: true,
+			innerScroll: true,
+			title: 'Rename Folder',
+			buttons: [{
+				text: $.mage.__('Rename'),
+				class: 'continue-order',
+				click: function (events) {
+					
+					/**********Ajax***********/
+						var expandmenu = $("#new_dir").val().toUpperCase();
+						var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";;
+						var request = {
+						'action':'renamedir',	
+						'old_dir': $("#old_dir").val(),
+						'new_dir': $("#new_dir").val()
+						};
+
+						var data = $.param(request);
+
+						jQuery.ajax({
+						url: url,
+						type: 'POST',
+						dataType: 'html',
+						data: data,
+						showLoader: true //use for display loader 
+						}).done(function (data){
+							console.log(data);
+							//events.closeModal();
+							 $('#renamefolder').modal('closeModal');
+							if(JSON.parse(data)['status'] == 1){
+								$(".left-menu-library").html(JSON.parse(data)['menu']);
+								menureinitialize();
+								var listofmenu = $("#expList li");
+								 $.each(listofmenu , function(n,v){ 
+									if($(this).text().toUpperCase().indexOf(expandmenu) > -1){
+										$(this).click();
+									};
+								});
+							}
+							return true;
+						});
+					/**********Ajax***********/
+					
+					
+					
+				}
+			},{
+				text: $.mage.__('Cancel'),
+				class: 'checkout-order',
+				click: function () {
+					this.closeModal();
+					console.log(this);
+				}
+			}]
+
+		};
+		
+		var popup = modal(options, $('#renamefolder'));
+		$(".rename_folder").on("click",function(event){
+			$('#renamefolder').modal('openModal');
+			event.preventDefault();
+		});
+		/************************ Rename folder script ********************************/
+		
+		
+		
+		/************************ Upload files script ********************************/
+		var options = {
+			type: 'popup',
+			responsive: true,
+			innerScroll: true,
+			title: 'Uploade Files',
+			buttons: [{
+				text: $.mage.__('Cancel Upload'),
+				class: 'checkout-order',
+				click: function () {
+					this.closeModal();
+				}
+			}]
+
+		};
+		
+		var popup = modal(options, $('#uploadfile'));
+		$(".uploadfile").on("click",function(event){
+			$(".status-process").text('');
+			$('#uploadfile').modal('openModal');
+			event.preventDefault();
+		});
+		/************************ Upload files script ********************************/
+		
+		
+		
+		/**********************
+		* Lasyload
+		**********************/
+
+		var url = "<?= $this->getUrl("resourcespage/document/requests") ?>";
+		var countitem = 1;
+
+
+
+		/****************************************
+		********** Scan Directories *************
+		****************************************/
+
+		$(document).on('click', '.medialib', function(event){
+		
+		//console.log('here');
+			var htmlimg = '';
+			var dir = $(this).attr("data-dir");
+			var dirname = $(this).text();
+			var request = {
+				'action':'scanfile',	
+				'dir': dir
+			};
+			
+			var data = $.param(request);
+			
+			jQuery.ajax({
+				url: url,
+				type: 'POST',
+				dataType: 'html',
+				data: data,
+				showLoader: true //use for display loader 
+			}).done(function (data){
+				
+				var folder_permission = "";
+				if(JSON.parse(data)['groups'] != -1 ){
+					var folder_permission = JSON.parse(data)['groups'].split(',');
+				}
+				if(JSON.parse(data)['status'] == 1){
+					
+					/* $.each(JSON.parse(data)['files'],function(i, field){
+						var extension = field.substr( (field.lastIndexOf('.') +1) );
+						var filename = field.substr( (field.lastIndexOf('/') +1) ).split(".")[0];
+						if(jQuery.inArray( extension, arr ) == -1){
+							img_src = place_holder;
+						}else{
+							if(extension == 'pdf'){
+							img_src = pdf;
+							}else{
+							img_src = field;
+							}
+						}
+						htmlimg += "<div class=\"filecnt\" title='"+filename+"'>";
+						htmlimg +=	"<p class=\"nm\" style=\"height:75px;width:100px;\">";
+						htmlimg +=	"<img src=\"<?= $this->getBaseUrl() ?>"+img_src+"\" data-filepath=\""+field+"\">";
+						htmlimg +=	"</p><br/>";
+						htmlimg +=	"<small>"+filename+"</small>";
+						htmlimg += "</div>";
+					}); */
+					$("#dir").val(dir);
+					$("#old_dir").val(dir);
+					$("#delete_folder").attr('data-rm-dir', dir);
+					$(".main_content").itemhtml(data);
+					$(".deletefile").hide();
+					$("#customer_groups").val(folder_permission);
+					localStorage.setItem("filter", data);
+				}
+				return true;
+			});
+			$(".medialib").removeClass("jstree-clicked");
+			$(this).addClass("jstree-clicked");
+			$("#new_dir").val(dirname);
+			event.preventDefault();
+			
+		});
+		
+		
+		/************************Delete folder script*****************************/
+		$(document).on('click', '#delete_folder', function(event){
+		 if (confirm("Are you sure you want delete this folder and files!")){
+			var htmlimg = '';
+			var dir = $(this).attr("data-rm-dir");
+			var request = {
+				'action':'removedir',	
+				'rmdir': dir
+			};
+			
+			var data = $.param(request);
+			
+			jQuery.ajax({
+				url: url,
+				type: 'POST',
+				dataType: 'html',
+				data: data,
+				showLoader: true //use for display loader 
+			}).done(function (data){
+				console.log(data);
+				if(JSON.parse(data)['status'] == 1){
+					$(".left-menu-library").html(JSON.parse(data)['menu']);
+					menureinitialize();
+				}
+				return true;
+			});
+			}
+			$(this).attr("data-rm-dir","null");
+			$(".medialib:first").click();
+			event.preventDefault();
+		});
+		
+		/*************************** Hover *********************************/
+		$(document).on('hover', '.medialib', function(event){ 
+			$(this).addClass("jstree-hovered");
+		},function(){ 
+			$(this).removeClass("jstree-hovered"); 
+		});
+
+		
+
+	
+
+		$(".medialib:first").click();
+
+	});
+</script>
